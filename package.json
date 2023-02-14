@@ -6,6 +6,9 @@
   "bin": {
     "dep-census": "dist/cli.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc"
   },
