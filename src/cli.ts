@@ -37,3 +37,13 @@ for (const name of names) {
   });
   if (!res.ok) continue;
   docs.push((await res.json()) as RegistryDoc);
+}
+
+const c = census(docs);
+const people = new Set(c.accounts);
+
+process.stdout.write(`${c.packages} packages · ${people.size} people can publish into them\n`);
+process.stdout.write(`  ${label}\n`);
+if (c.deprecated.length > 0) {
+  process.stdout.write(`${c.deprecated.length} deprecated: ${c.deprecated.join(", ")}\n`);
+}
