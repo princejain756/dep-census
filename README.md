@@ -8,9 +8,14 @@ maintains each package in your tree, and prints the number.
 
 ```console
 $ npm run build
-$ node dist/cli.js
-812 packages · 402 people can publish into them
+$ node dist/cli.js ./my-app
+1,214 packages · 587 people can publish into them
+  /home/you/my-app/package-lock.json
 ```
+
+It takes either a directory (where it looks for `package-lock.json` or
+`npm-shrinkwrap.json`) or the lockfile itself. Nested copies of the same package
+are counted once, so a tree where `react` ships three times shows up as one.
 
 ## License
 
