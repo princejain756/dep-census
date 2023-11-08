@@ -1,6 +1,6 @@
 {
   "name": "dep-census",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "count the strangers inside node_modules",
   "type": "module",
   "bin": {
