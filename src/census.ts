@@ -4,10 +4,17 @@ export interface RegistryDoc {
   maintainers?: { name: string; email?: string }[];
 }
 
+export interface Stranger {
+  name: string;
+  packages: string[];
+}
+
 export interface Census {
   packages: number;
-  accounts: string[];
-  deprecated: string[];
+  strangers: number;
+  deprecated: { name: string; message: string }[];
+  soloMaintained: number;
+  top: Stranger[];
 }
 
 // Pull every unique package name out of a package-lock.json or npm-shrinkwrap.json.
@@ -34,15 +41,22 @@ export function parseLock(lock: unknown): string[] {
   return [...names].sort();
 }
 
-// Every maintainer on every doc is one row saying "this account can publish this".
-// The same account shows up on hundreds of packages, so dedupe on read and let
-// the CLI decide how wide it is.
-export function census(docs: RegistryDoc[]): Census {
-  const accounts: string[] = [];
-  const deprecated: string[] = [];
+export function aggregate(docs: RegistryDoc[]): Census {
+  const byMaintainer = new Map<string, string[]>();
+  const deprecated: Census["deprecated"] = [];
+  let soloMaintained = 0;
+
   for (const doc of docs) {
-    if (doc.deprecated) deprecated.push(doc.name);
-    for (const m of doc.maintainers ?? []) accounts.push(m.name);
+    if (doc.deprecated) deprecated.push({ name: doc.name, message: doc.deprecated });
+    const names = doc.maintainers?.map((m) => m.name).filter(Boolean) ?? [];
+    if (names.length === 1) soloMaintained++;
+    for (const n of names) {
+      const arr = byMaintainer.get(n);
+      if (arr) arr.push(doc.name);
+      else byMaintainer.set(n, [doc.name]);
+    }
   }
-  return { packages: docs.length, accounts, deprecated };
-}
+
+  const top = [...byMaintainer.entries()]
+    .map(([name, packages]) => ({ name, packages }))
+    .sort((a, b) => b.packages.length - a.packages.length || a.name.localeCompare(b.name));
