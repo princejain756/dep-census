@@ -60,3 +60,12 @@ export function aggregate(docs: RegistryDoc[]): Census {
   const top = [...byMaintainer.entries()]
     .map(([name, packages]) => ({ name, packages }))
     .sort((a, b) => b.packages.length - a.packages.length || a.name.localeCompare(b.name));
+
+  return {
+    packages: docs.length,
+    strangers: byMaintainer.size,
+    deprecated,
+    soloMaintained,
+    top,
+  };
+}
