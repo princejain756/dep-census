@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { parseLock, census, type RegistryDoc } from "./census.js";
+import { parseLock, aggregate, type RegistryDoc } from "./census.js";
 
 const LOCKFILES = ["package-lock.json", "npm-shrinkwrap.json"];
 
@@ -39,11 +39,23 @@ for (const name of names) {
   docs.push((await res.json()) as RegistryDoc);
 }
 
-const c = census(docs);
-const people = new Set(c.accounts);
+const c = aggregate(docs);
+const pct = (n: number) => `${((n / c.packages) * 100).toFixed(1)}%`;
 
-process.stdout.write(`${c.packages} packages · ${people.size} people can publish into them\n`);
-process.stdout.write(`  ${label}\n`);
-if (c.deprecated.length > 0) {
-  process.stdout.write(`${c.deprecated.length} deprecated: ${c.deprecated.join(", ")}\n`);
+const out: string[] = [];
+out.push("");
+out.push(`${c.packages} packages · ${c.strangers} strangers`);
+out.push(`  ${label}`);
+out.push("");
+out.push("top strangers in your supply chain");
+for (const [i, s] of c.top.slice(0, 15).entries()) {
+  out.push(
+    `${String(i + 1).padStart(3)}. ${s.name.padEnd(24)} ${String(s.packages.length).padStart(4)} pkgs  (${pct(s.packages.length)})`,
+  );
 }
+out.push("");
+if (c.soloMaintained > 0) {
+  out.push(`  ${c.soloMaintained} packages (${pct(c.soloMaintained)}) are maintained by a single person`);
+}
+if (c.deprecated.length > 0) {
+  out.push(`  ${c.deprecated.length} deprecated: ${c.deprecated.slice(0, 5).map((d) => d.name).join(", ")}`);
