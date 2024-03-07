@@ -10,7 +10,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "node test/run.mjs"
   },
   "engines": {
     "node": ">=18"
