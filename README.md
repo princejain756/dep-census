@@ -28,6 +28,12 @@ It takes either a directory (where it looks for `package-lock.json` or
 `npm-shrinkwrap.json`) or the lockfile itself. Nested copies of the same package
 are counted once, so a tree where `react` ships three times shows up as one.
 
+## Testing
+
+```console
+$ npm run build && npm test
+```
+
 ## License
 
 MIT
