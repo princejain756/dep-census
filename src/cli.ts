@@ -97,3 +97,15 @@ for (const [i, s] of c.top.slice(0, 15).entries()) {
 out.push("");
 if (c.soloMaintained > 0) {
   out.push(`  ${c.soloMaintained} packages (${pct(c.soloMaintained)}) are maintained by a single person`);
+}
+if (c.deprecated.length > 0) {
+  out.push(`  ${c.deprecated.length} deprecated: ${c.deprecated.slice(0, 5).map((d) => d.name).join(", ")}`);
+}
+if (c.top.length > 0) {
+  out.push("");
+  out.push(
+    `the #1 stranger (${c.top[0].name}) can ship code into ${pct(c.top[0].packages.length)} of your install.`,
+  );
+}
+out.push("");
+process.stdout.write(out.join("\n"));
