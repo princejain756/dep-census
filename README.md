@@ -22,7 +22,18 @@ top strangers in your supply chain
   ...
 
   668 packages (55.0%) are maintained by a single person
+  71 deprecated: @types/cookie, gauge, ...
 ```
+
+## Usage
+
+```console
+$ node dist/cli.js                 # ./package-lock.json
+$ node dist/cli.js ./my-app        # directory containing a lockfile
+$ node dist/cli.js ./lock.json     # a specific lockfile
+```
+
+Flags: `--top <n>` strangers listed, `--json` for piping.
 
 It takes either a directory (where it looks for `package-lock.json` or
 `npm-shrinkwrap.json`) or the lockfile itself. Nested copies of the same package
