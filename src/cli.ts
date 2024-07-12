@@ -3,7 +3,39 @@ import { readFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parseLock, aggregate, type RegistryDoc } from "./census.js";
 
+const USAGE = `dep-census — count the strangers inside node_modules
+
+usage:
+  npx dep-census                census the current directory's package-lock.json
+  npx dep-census ./dir          directory containing package-lock.json
+  npx dep-census ./lock.json    a package-lock.json or npm-shrinkwrap.json file
+
+flags:
+  --top <n>     show n strangers (default 15)
+  --json        machine-readable output
+  --help        this
+`;
+
 const LOCKFILES = ["package-lock.json", "npm-shrinkwrap.json"];
+
+const args = process.argv.slice(2);
+let target = ".";
+let topN = 15;
+let asJson = false;
+
+for (let i = 0; i < args.length; i++) {
+  const a = args[i];
+  if (a === "--help" || a === "-h") {
+    process.stdout.write(USAGE);
+    process.exit(0);
+  } else if (a === "--json") {
+    asJson = true;
+  } else if (a === "--top") {
+    topN = Number(args[++i]) || 15;
+  } else if (!a.startsWith("-")) {
+    target = a;
+  }
+}
 
 function die(msg: string): never {
   process.stderr.write(`dep-census: ${msg}\n`);
@@ -70,42 +102,23 @@ async function fetchDocs(names: string[]): Promise<FetchResult> {
   return { docs, failed };
 }
 
-const { lock, label } = loadLockfile(process.argv[2] ?? ".");
+const { lock, label } = loadLockfile(target);
 const names = parseLock(lock);
 if (names.length === 0) die(`no dependencies in ${label}`);
 
-process.stderr.write(`fetching ${names.length} package docs...\n`);
+if (!asJson) process.stderr.write(`fetching ${names.length} package docs...\n`);
 const { docs, failed } = await fetchDocs(names);
 if (failed.length > 0) {
   process.stderr.write(`dep-census: registry unreachable for ${failed.length} packages (rate-limited, skipped)\n`);
 }
-
 const c = aggregate(docs);
-const pct = (n: number) => `${((n / c.packages) * 100).toFixed(1)}%`;
 
+if (asJson) {
+  process.stdout.write(JSON.stringify({ target: label, ...c }, null, 2) + "\n");
+  process.exit(0);
+}
+
+const pct = (n: number) => `${((n / c.packages) * 100).toFixed(1)}%`;
 const out: string[] = [];
 out.push("");
 out.push(`${c.packages} packages · ${c.strangers} strangers`);
-out.push(`  ${label}`);
-out.push("");
-out.push("top strangers in your supply chain");
-for (const [i, s] of c.top.slice(0, 15).entries()) {
-  out.push(
-    `${String(i + 1).padStart(3)}. ${s.name.padEnd(24)} ${String(s.packages.length).padStart(4)} pkgs  (${pct(s.packages.length)})`,
-  );
-}
-out.push("");
-if (c.soloMaintained > 0) {
-  out.push(`  ${c.soloMaintained} packages (${pct(c.soloMaintained)}) are maintained by a single person`);
-}
-if (c.deprecated.length > 0) {
-  out.push(`  ${c.deprecated.length} deprecated: ${c.deprecated.slice(0, 5).map((d) => d.name).join(", ")}`);
-}
-if (c.top.length > 0) {
-  out.push("");
-  out.push(
-    `the #1 stranger (${c.top[0].name}) can ship code into ${pct(c.top[0].packages.length)} of your install.`,
-  );
-}
-out.push("");
-process.stdout.write(out.join("\n"));
