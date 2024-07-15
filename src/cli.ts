@@ -122,3 +122,15 @@ const pct = (n: number) => `${((n / c.packages) * 100).toFixed(1)}%`;
 const out: string[] = [];
 out.push("");
 out.push(`${c.packages} packages · ${c.strangers} strangers`);
+out.push(`  ${label}`);
+out.push("");
+out.push("top strangers in your supply chain");
+for (const [i, s] of c.top.slice(0, topN).entries()) {
+  out.push(
+    `${String(i + 1).padStart(3)}. ${s.name.padEnd(24)} ${String(s.packages.length).padStart(4)} pkgs  (${pct(s.packages.length)})`,
+  );
+}
+out.push("");
+const facts: string[] = [];
+if (c.soloMaintained > 0)
+  facts.push(`${c.soloMaintained} packages (${pct(c.soloMaintained)}) are maintained by a single person`);
