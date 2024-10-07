@@ -33,11 +33,15 @@ $ node dist/cli.js ./my-app        # directory containing a lockfile
 $ node dist/cli.js ./lock.json     # a specific lockfile
 ```
 
-Flags: `--top <n>` strangers listed, `--json` for piping.
+Flags:
 
-It takes either a directory (where it looks for `package-lock.json` or
-`npm-shrinkwrap.json`) or the lockfile itself. Nested copies of the same package
-are counted once, so a tree where `react` ships three times shows up as one.
+- `--top <n>` — how many strangers to list (default 15)
+- `--json` — print the whole census as JSON, ready for `jq`
+
+Nested copies of the same package are counted once, so a tree where `react`
+ships three times still shows up as one. The old npm 6 lockfile format
+(`lockfileVersion: 1`) is rejected with a message rather than silently counted
+wrong.
 
 ## Testing
 
