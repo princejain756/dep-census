@@ -1,7 +1,11 @@
 export interface RegistryDoc {
   name: string;
+  version?: string;
   deprecated?: string;
   maintainers?: { name: string; email?: string }[];
+  author?: string | { name?: string; email?: string };
+  repository?: unknown;
+  license?: unknown;
 }
 
 export interface Stranger {
@@ -14,6 +18,7 @@ export interface Census {
   strangers: number;
   deprecated: { name: string; message: string }[];
   soloMaintained: number;
+  noMaintainerListed: string[];
   top: Stranger[];
 }
 
@@ -41,14 +46,31 @@ export function parseLock(lock: unknown): string[] {
   return [...names].sort();
 }
 
+function maintainerNames(doc: RegistryDoc): string[] {
+  const list = doc.maintainers?.map((m) => m.name).filter(Boolean) ?? [];
+  if (list.length > 0) return list;
+  // very old packages sometimes publish with no maintainers field; author is a weak proxy
+  const a = doc.author;
+  if (typeof a === "string" && a.trim()) return [a.trim().split(/[<({]/)[0].trim()];
+  if (a && typeof a === "object" && typeof a.name === "string" && a.name.trim()) {
+    return [a.name.trim()];
+  }
+  return [];
+}
+
 export function aggregate(docs: RegistryDoc[]): Census {
   const byMaintainer = new Map<string, string[]>();
   const deprecated: Census["deprecated"] = [];
+  const noMaintainerListed: string[] = [];
   let soloMaintained = 0;
 
   for (const doc of docs) {
     if (doc.deprecated) deprecated.push({ name: doc.name, message: doc.deprecated });
-    const names = doc.maintainers?.map((m) => m.name).filter(Boolean) ?? [];
+    const names = maintainerNames(doc);
+    if (names.length === 0) {
+      noMaintainerListed.push(doc.name);
+      continue;
+    }
     if (names.length === 1) soloMaintained++;
     for (const n of names) {
       const arr = byMaintainer.get(n);
@@ -60,12 +82,3 @@ export function aggregate(docs: RegistryDoc[]): Census {
   const top = [...byMaintainer.entries()]
     .map(([name, packages]) => ({ name, packages }))
     .sort((a, b) => b.packages.length - a.packages.length || a.name.localeCompare(b.name));
-
-  return {
-    packages: docs.length,
-    strangers: byMaintainer.size,
-    deprecated,
-    soloMaintained,
-    top,
-  };
-}
