@@ -136,6 +136,8 @@ if (c.soloMaintained > 0)
   facts.push(`${c.soloMaintained} packages (${pct(c.soloMaintained)}) are maintained by a single person`);
 if (c.deprecated.length > 0)
   facts.push(`${c.deprecated.length} deprecated: ${c.deprecated.slice(0, 5).map((d) => d.name).join(", ")}`);
+if (c.noMaintainerListed.length > 0)
+  facts.push(`${c.noMaintainerListed.length} packages list no maintainer at all`);
 for (const f of facts) out.push(`  ${f}`);
 if (c.top.length > 0) {
   out.push("");
