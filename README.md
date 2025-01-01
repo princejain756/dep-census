@@ -23,6 +23,9 @@ top strangers in your supply chain
 
   668 packages (55.0%) are maintained by a single person
   71 deprecated: @types/cookie, gauge, ...
+  2 packages list no maintainer at all
+
+the #1 stranger (ljharb) can ship code into 5.3% of your install.
 ```
 
 ## Usage
@@ -43,12 +46,18 @@ ships three times still shows up as one. The old npm 6 lockfile format
 (`lockfileVersion: 1`) is rejected with a message rather than silently counted
 wrong.
 
-## Testing
+## What it counts
 
-```console
-$ npm run build && npm test
-```
+- **strangers** — unique npm accounts that can publish a release of something in your tree
+- **solo-maintained** — packages where exactly one account has publish rights
+- **deprecated** — packages the registry itself marks deprecated
+- **top strangers** — the accounts that can ship code into the largest share of your install
 
-## License
+A stranger with publish rights to 10% of your tree is not a footnote. That is
+your supply chain.
 
-MIT
+## Limits
+
+- npm lockfiles only (`package-lock.json`, `npm-shrinkwrap.json`). yarn and pnpm use different formats — not supported yet.
+- Maintainer lists come from the registry's `latest` doc; a stale install can have different historical maintainers.
+- No vulnerability data — this is a census, not a scanner. Pair it with `npm audit` for the other half of the picture.
