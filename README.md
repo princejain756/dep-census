@@ -61,3 +61,13 @@ your supply chain.
 - npm lockfiles only (`package-lock.json`, `npm-shrinkwrap.json`). yarn and pnpm use different formats — not supported yet.
 - Maintainer lists come from the registry's `latest` doc; a stale install can have different historical maintainers.
 - No vulnerability data — this is a census, not a scanner. Pair it with `npm audit` for the other half of the picture.
+
+## Testing
+
+```console
+$ npm run build && npm test
+```
+
+## License
+
+MIT
