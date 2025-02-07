@@ -1,6 +1,6 @@
 {
   "name": "dep-census",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "count the strangers inside node_modules",
   "type": "module",
   "bin": {
@@ -11,14 +11,25 @@
   ],
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build",
     "test": "node test/run.mjs"
   },
   "engines": {
     "node": ">=18"
   },
+  "keywords": [
+    "supply-chain",
+    "dependencies",
+    "npm",
+    "security"
+  ],
+  "author": "Prince Jain",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/princejain756/dep-census.git"
+  },
   "devDependencies": {
     "@types/node": "^26.6.5",
     "typescript": "^7.0.2"
   }
-}
