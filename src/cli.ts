@@ -158,3 +158,12 @@ if (c.noMaintainerListed.length > 0)
   facts.push(`${c.noMaintainerListed.length} packages list no maintainer at all`);
 if (notOnNpm.length > 0)
   facts.push(`${notOnNpm.length} packages aren't on public npm (private registry or git deps)`);
+for (const f of facts) out.push(`  ${f}`);
+if (c.top.length > 0) {
+  out.push("");
+  out.push(
+    `the #1 stranger (${c.top[0].name}) can ship code into ${pct(c.top[0].packages.length)} of your install.`,
+  );
+}
+out.push("");
+process.stdout.write(out.join("\n"));
