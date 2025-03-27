@@ -9,8 +9,7 @@ maintains each package in your tree, and ranks the accounts that can ship code
 into the largest share of what you install.
 
 ```console
-$ npm run build
-$ node dist/cli.js ./my-app
+$ npx dep-census ./my-app
 
 1,214 packages · 587 strangers
   /home/you/my-app/package-lock.json
@@ -28,12 +27,27 @@ top strangers in your supply chain
 the #1 stranger (ljharb) can ship code into 5.3% of your install.
 ```
 
+Big trees give bigger numbers:
+
+```console
+$ npx dep-census microsoft/vscode
+
+1,179 packages · 710 strangers · 28 deprecated
+  microsoft/vscode (main)
+
+top strangers in your supply chain
+  1. ljharb                    122 pkgs  (10.3%)
+  2. microsoft1es              101 pkgs  (8.6%)
+  ...
+```
+
 ## Usage
 
 ```console
-$ node dist/cli.js                 # ./package-lock.json
-$ node dist/cli.js ./my-app        # directory containing a lockfile
-$ node dist/cli.js ./lock.json     # a specific lockfile
+$ npx dep-census                 # ./package-lock.json
+$ npx dep-census ./my-app        # directory containing a lockfile
+$ npx dep-census ./lock.json     # a specific lockfile
+$ npx dep-census owner/repo      # a GitHub repo's lockfile, fetched on the fly
 ```
 
 Flags:
@@ -51,6 +65,7 @@ wrong.
 - **strangers** — unique npm accounts that can publish a release of something in your tree
 - **solo-maintained** — packages where exactly one account has publish rights
 - **deprecated** — packages the registry itself marks deprecated
+- **not on public npm** — lockfile entries that resolve nowhere public (private registries, git deps)
 - **top strangers** — the accounts that can ship code into the largest share of your install
 
 A stranger with publish rights to 10% of your tree is not a footnote. That is
@@ -65,9 +80,3 @@ your supply chain.
 ## Testing
 
 ```console
-$ npm run build && npm test
-```
-
-## License
-
-MIT
