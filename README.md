@@ -80,3 +80,9 @@ your supply chain.
 ## Testing
 
 ```console
+$ npm run build && npm test
+```
+
+## License
+
+MIT
