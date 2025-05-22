@@ -1,7 +1,7 @@
 {
   "name": "dep-census",
-  "version": "0.3.0",
-  "description": "count the strangers inside node_modules",
+  "version": "0.4.0",
+  "description": "Count the strangers inside node_modules — who actually maintains the code your app runs",
   "type": "module",
   "bin": {
     "dep-census": "dist/cli.js"
@@ -21,7 +21,9 @@
     "supply-chain",
     "dependencies",
     "npm",
-    "security"
+    "security",
+    "node-modules",
+    "maintainers"
   ],
   "author": "Prince Jain",
   "license": "MIT",
