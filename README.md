@@ -1,33 +1,10 @@
 # dep-census
 
-Count the strangers inside `node_modules` — who actually maintains the code your
-app runs.
+**`npx dep-census` counts the strangers inside your `node_modules` — who actually maintains the code your app runs.**
 
-Every `npm install` pulls in packages you never chose, maintained by people you
-have never heard of. dep-census reads your lockfile, asks the npm registry who
-maintains each package in your tree, and ranks the accounts that can ship code
-into the largest share of what you install.
+![dep-census output on microsoft/vscode](demo.png)
 
-```console
-$ npx dep-census ./my-app
-
-1,214 packages · 587 strangers
-  /home/you/my-app/package-lock.json
-
-top strangers in your supply chain
-  1. ljharb                      64 pkgs  (5.3%)
-  2. sindresorhus                61 pkgs  (5.0%)
-  3. jonschlinkert               58 pkgs  (4.8%)
-  ...
-
-  668 packages (55.0%) are maintained by a single person
-  71 deprecated: @types/cookie, gauge, ...
-  2 packages list no maintainer at all
-
-the #1 stranger (ljharb) can ship code into 5.3% of your install.
-```
-
-Big trees give bigger numbers:
+Every `npm install` is an act of trust. You vetted the package you typed; you did not vet the 700 transitive packages that came with it, or the people who can publish the next version of each. dep-census reads your lockfile, asks the npm registry who maintains every package in your tree, and prints the number nobody thinks about.
 
 ```console
 $ npx dep-census microsoft/vscode
@@ -38,8 +15,17 @@ $ npx dep-census microsoft/vscode
 top strangers in your supply chain
   1. ljharb                    122 pkgs  (10.3%)
   2. microsoft1es              101 pkgs  (8.6%)
+  3. jonschlinkert             100 pkgs  (8.5%)
+  4. sindresorhus              100 pkgs  (8.5%)
   ...
+
+  650 packages (55.1%) are maintained by a single person
+  28 deprecated: @sinonjs/text-encoding, @types/cookie, ...
+
+the #1 stranger (ljharb) can ship code into 10.3% of your install.
 ```
+
+Runs on famous repos too — see [LEADERBOARD.md](LEADERBOARD.md).
 
 ## Usage
 
@@ -50,15 +36,7 @@ $ npx dep-census ./lock.json     # a specific lockfile
 $ npx dep-census owner/repo      # a GitHub repo's lockfile, fetched on the fly
 ```
 
-Flags:
-
-- `--top <n>` — how many strangers to list (default 15)
-- `--json` — print the whole census as JSON, ready for `jq`
-
-Nested copies of the same package are counted once, so a tree where `react`
-ships three times still shows up as one. The old npm 6 lockfile format
-(`lockfileVersion: 1`) is rejected with a message rather than silently counted
-wrong.
+Flags: `--top <n>` strangers listed, `--json` for piping.
 
 ## What it counts
 
@@ -68,14 +46,12 @@ wrong.
 - **not on public npm** — lockfile entries that resolve nowhere public (private registries, git deps)
 - **top strangers** — the accounts that can ship code into the largest share of your install
 
-A stranger with publish rights to 10% of your tree is not a footnote. That is
-your supply chain.
+A stranger with publish rights to 10% of your tree is not a footnote. That is your supply chain.
 
 ## Limits
 
 - npm lockfiles only (`package-lock.json`, `npm-shrinkwrap.json`). yarn and pnpm use different formats — not supported yet.
 - Maintainer lists come from the registry's `latest` doc; a stale install can have different historical maintainers.
-- No vulnerability data — this is a census, not a scanner. Pair it with `npm audit` for the other half of the picture.
 
 ## Testing
 
