@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { margin: 0; background: #0b0e14; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: "SF Mono", Menlo, monospace; }
+  .term { width: 980px; margin: 40px; border-radius: 12px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.6); background: #0d1117; border: 1px solid #21262d; }
+  .bar { display: flex; gap: 8px; padding: 14px 16px; background: #161b22; border-bottom: 1px solid #21262d; align-items: center; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .r { background: #ff5f57; } .y { background: #febc2e; } .g { background: #28c840; }
+  .title { margin-left: 12px; color: #7d8590; font-size: 13px; }
+  pre { margin: 0; padding: 28px 32px 34px; font-size: 17px; line-height: 1.62; color: #c9d1d9; }
+  .p { color: #79c0ff; } .dim { color: #7d8590; }
+  .big { color: #e3b341; font-weight: 700; }
+  .flag { color: #ffa198; }
+</style>
+</head>
+<body>
+<div class="term">
+  <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="title">zsh</span></div>
+<pre><span class="p">$</span> npx dep-census microsoft/vscode
+
+<span class="big">1,179 packages · 710 strangers · 28 deprecated</span>
+<span class="dim">  microsoft/vscode (main)</span>
+
+top strangers in your supply chain
+  1. ljharb                    122 pkgs  (10.3%)
+  2. microsoft1es              101 pkgs  (8.6%)
+  3. jonschlinkert             100 pkgs  (8.5%)
+  4. sindresorhus              100 pkgs  (8.5%)
+  5. phated                     69 pkgs  (5.9%)
+
+<span class="flag">  650 packages (55.1%) are maintained by a single person</span>
+<span class="flag">  28 deprecated packages still in the tree</span>
+
+the #1 stranger (ljharb) can ship code into 10.3% of your install.
+
+<span class="p">$</span> <span class="dim">|</span></pre>
+</div>
+</body>
+</html>
