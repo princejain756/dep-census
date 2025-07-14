@@ -1,6 +1,6 @@
 {
   "name": "dep-census",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "Count the strangers inside node_modules — who actually maintains the code your app runs",
   "type": "module",
   "bin": {
