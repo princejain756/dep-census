@@ -25,7 +25,7 @@ top strangers in your supply chain
 the #1 stranger (ljharb) can ship code into 10.3% of your install.
 ```
 
-Runs on famous repos too — see [LEADERBOARD.md](LEADERBOARD.md).
+Runs on famous repos too — see [LEADERBOARD.md](LEADERBOARD.md). npm's own CLI trusts 450 strangers; Ionic's tree is 21% sindresorhus.
 
 ## Usage
 
@@ -52,12 +52,11 @@ A stranger with publish rights to 10% of your tree is not a footnote. That is yo
 
 - npm lockfiles only (`package-lock.json`, `npm-shrinkwrap.json`). yarn and pnpm use different formats — not supported yet.
 - Maintainer lists come from the registry's `latest` doc; a stale install can have different historical maintainers.
+- No vulnerability data — this is a census, not a scanner. Pair it with `npm audit` for the other half of the picture.
 
-## Testing
+## Why
 
-```console
-$ npm run build && npm test
-```
+The xz backdoor was one overworked maintainer with commit access to a package half the internet ran. npm's graph is the same shape, one level deeper. The first step to knowing your exposure is knowing the count — and the names.
 
 ## License
 
