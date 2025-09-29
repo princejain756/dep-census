@@ -22,13 +22,16 @@ const census = aggregate([
   { name: "a", maintainers: [{ name: "sindresorhus" }] },
   { name: "b", maintainers: [{ name: "sindresorhus" }] },
   { name: "c", deprecated: "use d instead", maintainers: [{ name: "tj" }] },
+  { name: "d", author: "Someone <s@x.io>" },
+  { name: "e" },
 ]);
 
-assert.equal(census.packages, 4);
-assert.equal(census.strangers, 4);
+assert.equal(census.packages, 6);
+assert.equal(census.strangers, 5);
 assert.equal(census.top[0].name, "sindresorhus");
 assert.equal(census.top[0].packages.length, 2);
-assert.equal(census.soloMaintained, 3);
+assert.equal(census.soloMaintained, 4);
 assert.equal(census.deprecated[0].name, "c");
+assert.deepEqual(census.noMaintainerListed, ["e"]);
 
 console.log("all checks pass");
