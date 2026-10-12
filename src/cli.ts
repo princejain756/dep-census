@@ -68,21 +68,22 @@ async function loadLockfile(input: string): Promise<{ lock: unknown; label: stri
     const p = join(dir, name);
     if (existsSync(p)) return { lock: JSON.parse(readFileSync(p, "utf8")), label: p };
   }
-  // owner/repo on GitHub — try the two common default branches, no API call needed
+  // owner/repo on GitHub
   if (/^[\w.-]+\/[\w.-]+$/.test(input)) {
-    for (const branch of ["main", "master"]) {
-      for (const name of ["package-lock.json", "npm-shrinkwrap.json"]) {
-        try {
-          const doc = await fetchJson(
-            `https://raw.githubusercontent.com/${input}/${branch}/${name}`,
-          );
-          return { lock: doc, label: `${input} (${branch})` };
-        } catch {
-          /* try next */
-        }
+    const repo = (await fetchJson(`https://api.github.com/repos/${input}`).catch(() =>
+      die(`could not fetch ${input} from GitHub`),
+    )) as { default_branch?: string };
+    const branch = repo.default_branch ?? "main";
+    for (const name of ["package-lock.json", "npm-shrinkwrap.json"]) {
+      const url = `https://raw.githubusercontent.com/${input}/${branch}/${name}`;
+      try {
+        const doc = await fetchJson(url);
+        return { lock: doc, label: `${input} (${branch})` };
+      } catch {
+        /* try next filename */
       }
     }
-    die(`no package-lock.json in ${input}@main|master — yarn/pnpm lockfiles aren't supported yet`);
+    die(`no package-lock.json in ${input}@${branch} — yarn/pnpm lockfiles aren't supported yet`);
   }
   die(`no package-lock.json found at ${input}`);
 }
