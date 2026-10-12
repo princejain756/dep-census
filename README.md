@@ -2,27 +2,30 @@
 
 **`npx dep-census` counts the strangers inside your `node_modules` — who actually maintains the code your app runs.**
 
+![dep-census output on microsoft/vscode](demo.png)
+
 Every `npm install` is an act of trust. You vetted the package you typed; you did not vet the 700 transitive packages that came with it, or the people who can publish the next version of each. dep-census reads your lockfile, asks the npm registry who maintains every package in your tree, and prints the number nobody thinks about.
 
 ```console
 $ npx dep-census microsoft/vscode
 
-1,187 packages · 431 strangers · 12 deprecated
+1,179 packages · 710 strangers · 28 deprecated
   microsoft/vscode (main)
 
 top strangers in your supply chain
-  1. microsoft1es               91 pkgs  (13.2%)
-  2. ljharb                     67 pkgs  (9.7%)
-  3. jonschlinkert              52 pkgs  (7.5%)
-  4. microsoft-oss-releases     46 pkgs  (6.7%)
-  5. sindresorhus               45 pkgs  (6.5%)
+  1. ljharb                    122 pkgs  (10.3%)
+  2. microsoft1es              101 pkgs  (8.6%)
+  3. jonschlinkert             100 pkgs  (8.5%)
+  4. sindresorhus              100 pkgs  (8.5%)
   ...
 
-  357 packages (51.7%) are maintained by a single person
-  12 deprecated: @types/cookie, @sinonjs/text-encoding, ...
+  650 packages (55.1%) are maintained by a single person
+  28 deprecated: @sinonjs/text-encoding, @types/cookie, ...
 
-the #1 stranger (microsoft1es) can ship code into 13.2% of your install.
+the #1 stranger (ljharb) can ship code into 10.3% of your install.
 ```
+
+Runs on famous repos too — see [LEADERBOARD.md](LEADERBOARD.md). npm's own CLI trusts 450 strangers; Ionic's tree is 21% sindresorhus.
 
 ## Usage
 
