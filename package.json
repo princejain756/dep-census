@@ -1,0 +1,38 @@
+{
+  "name": "dep-census",
+  "version": "1.0.0",
+  "description": "Count the strangers inside node_modules — who actually maintains the code your app runs",
+  "type": "module",
+  "bin": {
+    "dep-census": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "node test/run.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "supply-chain",
+    "dependencies",
+    "npm",
+    "security",
+    "node-modules",
+    "maintainers"
+  ],
+  "author": "Prince Jain",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/princejain756/dep-census.git"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "typescript": "^7.0.2"
+  }
+}
